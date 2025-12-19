@@ -8,6 +8,17 @@ SCRIPT_PATH = f"sd-scripts/finetune/tag_images_by_wd14_tagger.py"
 VENV_PYTHON = f"sd-scripts/venv/bin/accelerate"
 MODEL_REPO = "SmilingWolf/wd-v1-4-convnextv2-tagger-v2"
 
+def load_last_directory():
+    try:
+        with open("last_directory.txt", "r") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return ""
+
+def save_last_directory(path):
+    with open("last_directory.txt", "w") as f:
+        f.write(path)
+
 def run_tagger_on_folder(folder_path, batch_size, threshold):
     command = [
         VENV_PYTHON, "launch",
@@ -54,6 +65,7 @@ def tag_images(directory, batch_size, threshold):
     if not os.path.isdir(directory):
         yield "Invalid directory path.", gr.update(visible=False)
         return
+    save_last_directory(directory)
     yield "Starting tagging process...", gr.update(value=0, visible=True)
     yield from run_tagger_on_folder(directory, batch_size, threshold)
 
@@ -63,7 +75,7 @@ with gr.Blocks() as demo:
     gr.Markdown("Provide a directory containing images to tag them automatically.")
     
     with gr.Row():
-        directory_input = gr.Textbox(label="Directory Path", placeholder="Enter the path to the folder with images")
+        directory_input = gr.Textbox(label="Directory Path", placeholder="Enter the path to the folder with images", value=load_last_directory())
         batch_size_input = gr.Number(label="Batch Size", value=2, minimum=1)
         threshold_input = gr.Number(label="Threshold", value=0.3, minimum=0.0, maximum=1.0)
     
