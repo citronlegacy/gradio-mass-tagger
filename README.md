@@ -23,6 +23,8 @@ The app serves as a user-friendly wrapper around the [kohya-ss/sd-scripts](https
 
    This script will create a virtual environment, install the required packages from `requirements.txt`, and prepare the necessary models.
 
+   **Note for Linux users**: If you encounter installation or runtime issues, please refer to `additional_setup.md` for additional system dependencies and troubleshooting steps.
+
 ## Launching the App
 
 After setup, activate the virtual environment and run the Gradio app:
